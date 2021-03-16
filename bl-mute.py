@@ -25,7 +25,7 @@ async def update_db() -> None:
 async def _incoming_listner(event: NewMessage.Event) -> None:
     if (
         event.chat_id not in hashmap and
-        (event.is_channel or event.is_group) and
+        (event.is_channel or event.is_private) and
         not (event.chat.creator or event.chat.admin_rights.delete_messages)
     ):
         return
@@ -47,7 +47,7 @@ async def get_users(event: NewMessage.Event) -> types.User or None:
             except (TypeError, ValueError):
                 pass
     elif event.is_private and event.out:
-        users = [await event.get_chat()]
+        users = [await event.get_chat().id]
     elif event.reply_to_msg_id:
         reply = await event.get_reply_message()
         users = [await reply.get_sender().id]
